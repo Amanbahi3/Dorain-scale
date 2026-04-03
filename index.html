@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dorian Scale - Strategy for Systems That Matter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --charcoal: #2a2a2a;
+            --dark-gray: #3d3d3d;
+            --light-gray: #f5f5f5;
+            --off-white: #fafaf8;
+            --taupe: #8b8680;
+            --gold: #c9b8a8;
+            --plum: #4a3f47;
+            --text-primary: #2a2a2a;
+            --text-secondary: #6b6b6b;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: var(--off-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            padding: 0 5%;
+            background: transparent;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            height: 70px;
+            background: rgba(250, 250, 248, 0.98);
+            padding: 0 5%;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--charcoal);
+        }
+
+        .nav-logo {
+            max-width: 200px;
+            max-height: 100px;
+            height: auto;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            color: var(--charcoal);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--charcoal);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--charcoal);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-cta:hover {
+            background: var(--dark-gray);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                height: 70px;
+                padding: 0 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-brand {
+                font-size: 20px;
+            }
+            .nav-logo {
+                max-width: 150px;
+                max-height: 40px;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 5% 4rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, #f0ebe4 100%);
+            overflow: hidden;
+            margin-top: 0;
+            padding-top: 120px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201, 184, 168, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 134, 128, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(250, 250, 248, 0.8);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--charcoal);
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(42, 42, 42, 0.15);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--charcoal);
+            padding: 1rem 2.5rem;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            border: 1.5px solid var(--charcoal);
+            border-radius: 2px;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background: var(--charcoal);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Trust Strip */
+        .trust-strip {
+            background: var(--charcoal);
+            color: white;
+            padding: 2.5rem 5%;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .trust-item {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .trust-item::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .trust-item:first-child::before {
+            display: none;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .trust-strip {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 2rem 5%;
+            }
+            .trust-item {
+                font-size: 12px;
+            }
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 5%;
+            background: var(--off-white);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, #ebe4d9 100%);
+            border-radius: 4px;
+            overflow: hidden;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-content {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .about-content h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        .founder-name {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--taupe);
+            margin-bottom: 1rem;
+        }
+
+        .about-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .quote-block {
+            border-left: 3px solid var(--gold);
+            padding-left: 2rem;
+            margin: 2rem 0;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--charcoal);
+            line-height: 1.8;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding: 4rem 5%;
+            }
+            .about-image {
+                height: 350px;
+            }
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 5%;
+            background: var(--light-gray);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(42, 42, 42, 0.08);
+        }
+
+        .service-card h3 {
+            font-size: 1.4rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        /* Why Dorian Scale Section */
+        .why-section {
+            padding: 6rem 5%;
+            background: var(--charcoal);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201, 184, 168, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .why-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 134, 128, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        .why-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .why-content h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .why-content p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .why-highlight {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        /* Insights Section */
+        .insights {
+            padding: 6rem 5%;
+            background: var(--off-white);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .insight-card:nth-child(1) { animation-delay: 0.1s; }
+        .insight-card:nth-child(2) { animation-delay: 0.2s; }
+        .insight-card:nth-child(3) { animation-delay: 0.3s; }
+        .insight-card:nth-child(4) { animation-delay: 0.4s; }
+        .insight-card:nth-child(5) { animation-delay: 0.5s; }
+        .insight-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .insight-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(42, 42, 42, 0.1);
+        }
+
+        .insight-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--light-gray) 0%, #ebe4d9 100%);
+            overflow: hidden;
+        }
+
+        .insight-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .insight-card:hover .insight-image img {
+            transform: scale(1.05);
+        }
+
+        .insight-content {
+            padding: 2rem;
+        }
+
+        .insight-content h3 {
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.8rem;
+        }
+
+        .insight-content p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .insight-link {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--charcoal);
+            position: relative;
+            display: inline-block;
+        }
+
+        .insight-link::after {
+            content: '→';
+            margin-left: 0.5rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .insight-card:hover .insight-link::after {
+            transform: translateX(3px);
+        }
+
+        /* Who We Work With */
+        .who-works {
+            padding: 6rem 5%;
+            background: var(--light-gray);
+        }
+
+        .who-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .who-card {
+            background: white;
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .who-card:nth-child(1) { animation-delay: 0.1s; }
+        .who-card:nth-child(2) { animation-delay: 0.2s; }
+        .who-card:nth-child(3) { animation-delay: 0.3s; }
+        .who-card:nth-child(4) { animation-delay: 0.4s; }
+        .who-card:nth-child(5) { animation-delay: 0.5s; }
+        .who-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .who-card:hover {
+            background: var(--charcoal);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .who-card h3 {
+            font-size: 1.3rem;
+            color: var(--charcoal);
+            transition: color 0.3s ease;
+        }
+
+        .who-card:hover h3 {
+            color: white;
+        }
+
+        .who-card p {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .who-card:hover p {
+            opacity: 1;
+            color: white;
+        }
+
+        /* Statement Section */
+        .statement {
+            padding: 8rem 5%;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--plum) 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .statement::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(201, 184, 168, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .statement-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .statement h2 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .statement p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 5%;
+            background: var(--off-white);
+        }
+
+        .contact-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            color: var(--charcoal);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--charcoal);
+            box-shadow: 0 0 0 3px rgba(42, 42, 42, 0.05);
+        }
+
+        .form-submit {
+            width: 100%;
+            background: var(--charcoal);
+            color: white;
+            padding: 1rem;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .form-submit:hover {
+            background: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(42, 42, 42, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: white;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 3rem;
+        }
+
+        .footer-brand h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .social-link {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .social-link:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(201, 184, 168, 0.1);
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Scroll reveal animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .statement {
+                padding: 4rem 5%;
+                min-height: auto;
+            }
+            .statement h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-brand">
+            <img src="logo d.png" alt="Dorian Scale Logo" class="nav-logo">
+            Dorian Scale
+        </div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#insights">Insights</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
+            Consultation
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <video class="hero-video" autoplay muted loop>
+            <source src="Video_Generation_Request_Fulfilled.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Strategy for Systems That Matter</h1>
+            <p>Dorian Scale partners with leaders, institutions, and changemakers to design pathways for inclusive growth, leadership, and long-term impact.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })">
+                    Work With Us
+                </button>
+                <button class="btn-secondary" onclick="document.getElementById('insights').scrollIntoView({ behavior: 'smooth' })">
+                    Explore Insights
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+        <div class="trust-item">Strategy</div>
+        <div class="trust-item">Leadership</div>
+        <div class="trust-item">Public Systems</div>
+        <div class="trust-item">Inclusive Growth</div>
+        <div class="trust-item">Advisory</div>
+        <div class="trust-item">Transformation</div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about scroll-reveal" id="about">
+        <div class="about-image">
+            <img src="1615537373419.jpg" alt="Dr. Poornima Dore, Founder & CEO">
+        </div>
+        <div class="about-content">
+            <div class="founder-name">About the Founder</div>
+            <h2>Dr. Poornima Dore</h2>
+            <div class="founder-name" style="text-transform: none; margin-bottom: 2rem;">Founder & CEO, Dorian Scale</div>
+            <p class="about-text">
+                Dr. Poornima Dore is an economist and strategic advisor with two decades of experience at the intersection of leadership, systems, and inclusive growth. Her work bridges academic rigor with practical impact, helping institutions design transformative policies and programs.
+            </p>
+            <p class="about-text">
+                Specializing in regional development, institutional reform, and leadership systems, Poornima has advised governments, foundations, and global organizations on strategies for sustainable, equitable change.
+            </p>
+            <div class="quote-block">
+                "Meaningful change requires both structure and sensitivity."
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services scroll-reveal" id="services">
+        <div class="section-header">
+            <h2>Our Services</h2>
+            <p class="section-subtitle">We offer integrated advisory across strategy, leadership, systems design, and transformation.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Impact Advisory</h3>
+                <p>Strategic guidance for organizations seeking measurable social, economic, and institutional impact through systems-level change.</p>
+            </div>
+            <div class="service-card">
+                <h3>Strategy & Policy</h3>
+                <p>Development of forward-looking policies and strategic frameworks for governments, institutions, and multi-stakeholder initiatives.</p>
+            </div>
+            <div class="service-card">
+                <h3>Leadership & Inclusion</h3>
+                <p>Building leadership capacity and inclusive cultures within organizations, with focus on diverse, equitable systems.</p>
+            </div>
+            <div class="service-card">
+                <h3>Regional Growth</h3>
+                <p>Place-based strategies for economic diversification, innovation ecosystems, and regional institutional development.</p>
+            </div>
+            <div class="service-card">
+                <h3>Institutional Transformation</h3>
+                <p>Deep organizational redesign for public agencies, nonprofits, and social enterprises seeking systemic renewal.</p>
+            </div>
+            <div class="service-card">
+                <h3>Research & Insights</h3>
+                <p>Original research, data analysis, and thought leadership on systems change, leadership, and inclusive growth models.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Dorian Scale -->
+    <section class="why-section scroll-reveal">
+        <div class="why-content">
+            <h2>Why Dorian Scale</h2>
+            <p>
+                At Dorian Scale, strategy is not just analytical — it is also intuitive, human, and deeply contextual. Like a scale in music, meaningful change requires <span class="why-highlight">structure, harmony, and movement</span>.
+            </p>
+            <p>
+                We don't believe in one-size-fits-all solutions. Instead, we listen deeply, understand complex systems, and design pathways that respect local context while aspiring to global standards.
+            </p>
+            <p>
+                Our approach combines rigorous analysis with human-centered design, ensuring strategies are both intellectually sound and implementable within real-world constraints.
+            </p>
+        </div>
+    </section>
+
+    <!-- Insights Section -->
+    <section class="insights scroll-reveal" id="insights">
+        <div class="section-header">
+            <h2>Insights & Thought Leadership</h2>
+            <p class="section-subtitle">Exploring the future of leadership, policy, and institutional impact.</p>
+        </div>
+        <div class="insights-grid">
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://blog.thecenterforsalesstrategy.com/hs-fs/hubfs/insights-for-getting-the-first-appointment.jpeg?width=2121&name=insights-for-getting-the-first-appointment.jpeg" alt="Future of Leadership Systems">
+                </div>
+                <div class="insight-content">
+                    <h3>The Future of Leadership Systems</h3>
+                    <p>How organizations are reimagining leadership structures for complexity, diversity, and long-term resilience.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://www.growthforce.com/hubfs/Business%20Growth%20Stages.jpeg" alt="Inclusive Growth">
+                </div>
+                <div class="insight-content">
+                    <h3>Inclusive Growth in Emerging Economies</h3>
+                    <p>Building economic pathways that create opportunity while reducing inequality in rapidly developing regions.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop" alt="Designing Institutions">
+                </div>
+                <div class="insight-content">
+                    <h3>Designing Institutions for Long-Term Impact</h3>
+                    <p>Frameworks for institutional design that prioritize sustainability, accountability, and adaptive capacity.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://images.squarespace-cdn.com/content/v1/581a8a72b8a79b7bef06ba28/1552005717910-Q3OOBW840WCCWP6IATWV/content+strategy+course.jpeg" alt="Human-Centered Strategy">
+                </div>
+                <div class="insight-content">
+                    <h3>Why Human-Centered Strategy Matters</h3>
+                    <p>Beyond data: integrating human insight, lived experience, and systems thinking into strategic planning.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://media.assettype.com/outlookbusiness/2026-02-27/hwdwtlnj/India-Q4-GDP-Data?w=801&auto=format%2Ccompress&fit=max&format=webp&dpr=1.0" alt="Reframing Growth">
+                </div>
+                <div class="insight-content">
+                    <h3>Reframing Regional Growth</h3>
+                    <p>Moving beyond traditional metrics to measure and build regional prosperity rooted in local capacity.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-image">
+                    <img src="https://cdn.prod.website-files.com/645e5ca8882c17703ced9581/65cfb1b03db952abc466bcc0_Quels%20sont%20les%20diffe%CC%81rents%20types%20de%20leadership%20%20%20Visconti%20Partners.png" alt="Leadership Beyond Metrics">
+                </div>
+                <div class="insight-content">
+                    <h3>Leadership Beyond Metrics</h3>
+                    <p>Defining and developing leadership qualities that matter in an age of complexity and rapid change.</p>
+                    <a href="#" class="insight-link">Read Insight</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who We Work With -->
+    <section class="who-works scroll-reveal">
+        <div class="section-header">
+            <h2>Who We Work With</h2>
+            <p class="section-subtitle">Partnerships across sectors for systemic change.</p>
+        </div>
+        <div class="who-works-grid">
+            <div class="who-card">
+                <h3>Businesses</h3>
+                <p>Organizations seeking strategic transformation and inclusive growth models.</p>
+            </div>
+            <div class="who-card">
+                <h3>Governments</h3>
+                <p>Public agencies designing policy frameworks and institutional systems.</p>
+            </div>
+            <div class="who-card">
+                <h3>Foundations</h3>
+                <p>Philanthropic organizations amplifying social impact through strategic grants.</p>
+            </div>
+            <div class="who-card">
+                <h3>Institutions</h3>
+                <p>Universities, research centers, and knowledge organizations advancing policy innovation.</p>
+            </div>
+            <div class="who-card">
+                <h3>Ecosystem Builders</h3>
+                <p>Networks and platforms catalyzing regional development and cross-sector collaboration.</p>
+            </div>
+            <div class="who-card">
+                <h3>Social Impact Leaders</h3>
+                <p>Mission-driven organizations scaling change across communities and systems.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statement Section -->
+    <section class="statement scroll-reveal">
+        <div class="statement-content">
+            <h2>Where Insight Meets Impact</h2>
+            <p>We partner with visionary leaders to design the future of work, governance, and society.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact scroll-reveal" id="contact">
+        <div class="contact-wrapper">
+            <h2>Let's Build What Matters</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="organization">Organization</label>
+                    <input type="text" id="organization" name="organization">
+                </div>
+                <div class="form-group">
+                    <label for="message">What are you looking to solve?</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="form-submit">Send Inquiry</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h4>Dorian Scale</h4>
+                <p>Premium advisory for strategy, leadership, and inclusive growth. Based in an internationally distributed network.</p>
+            </div>
+            <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Navigate</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#insights">Insights</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Connect</h4>
+                <ul class="footer-links">
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright">&copy; 2024 Dorian Scale. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="#" class="social-link" title="LinkedIn">in</a>
+                <a href="#" class="social-link" title="Twitter">tw</a>
+                <a href="#" class="social-link" title="Email">@</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Form submission
+        document.querySelector('.contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const organization = document.getElementById('organization').value;
+            const message = document.getElementById('message').value;
+
+            if (name && email && message) {
+                alert('Thank you for your inquiry. We will be in touch shortly.');
+                document.querySelector('.contact-form').reset();
+            } else {
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && document.querySelector(href)) {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
